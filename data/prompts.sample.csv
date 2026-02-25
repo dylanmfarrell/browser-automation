@@ -1,0 +1,4 @@
+id,prompt
+1,"Hello! Summarize the benefits of Playwright in 2 sentences."
+2,"Write a JSON object with keys: name, role, confidence."
+3,"Given: 2, 4, 6, 8. Predict the next 3 numbers."

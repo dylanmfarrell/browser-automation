@@ -1,0 +1,20 @@
+{
+  "name": "playwright-csv-chatbot",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "install:browsers": "playwright install --with-deps",
+    "dev": "tsx src/index.ts",
+    "run": "node --loader tsx src/index.ts",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "playwright": "^1.49.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
