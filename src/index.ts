@@ -6,6 +6,7 @@ import { loadPromptsFromCsv } from "./csv.js";
 import { loadConfig } from "./config.js";
 import { SelectorChatAdapter } from "./adapters/selectorAdapter.js";
 import { ResultRow } from "./types.js";
+import { applyAuthCookie } from "./auth.js";
 
 function getArg(name: string): string | undefined {
     const idx = process.argv.indexOf(name);
@@ -41,6 +42,8 @@ async function main() {
 
     const page = await context.newPage();
     const chat = new SelectorChatAdapter(page, cfg);
+
+    await applyAuthCookie(context, cfg.url);
 
     await chat.goto(cfg.url);
     await chat.startNewChatIfConfigured();
