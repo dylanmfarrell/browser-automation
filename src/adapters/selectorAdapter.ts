@@ -8,7 +8,7 @@ export class SelectorChatAdapter extends BaseChatAdapter {
     }
 
     async goto(url: string) {
-        await this.page.goto(url, { waitUntil: "domcontentloaded" });
+        await this.page.goto(url, { waitUntil: "load", timeout: 0 });
     }
 
     async startNewChatIfConfigured(): Promise<void> {
@@ -40,13 +40,13 @@ export class SelectorChatAdapter extends BaseChatAdapter {
         const msgs = this.page.locator(this.cfg.assistantMessage);
 
         // Wait until at least one assistant message exists
-        await msgs.first().waitFor({ state: "visible", timeout: 60_000 });
+        await msgs.first().waitFor({ state: "visible", timeout: 0 });
         const last = msgs.last();
 
         // Best-effort “thinking” indicator handling
         if (this.cfg.thinking) {
             const thinking = this.page.locator(this.cfg.thinking).first();
-            await thinking.waitFor({ state: "hidden", timeout: 60_000 }).catch(() => { });
+            await thinking.waitFor({ state: "hidden", timeout: 0 }).catch(() => { });
         }
 
         // Stabilization loop (text stops changing)
