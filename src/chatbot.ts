@@ -5,7 +5,7 @@ export class ChatbotClient {
     constructor(private page: Page) { }
 
     async goto(url: string) {
-        await this.page.goto(url, { waitUntil: "domcontentloaded" });
+        await this.page.goto(url, { waitUntil: "load", timeout: 0 });
     }
 
     async sendPromptAndGetResponse(prompt: string): Promise<string> {
@@ -32,7 +32,7 @@ export class ChatbotClient {
         const msgs = this.page.locator(selectors.assistantMessage);
 
         // Wait for at least one assistant message
-        await msgs.first().waitFor({ state: "visible", timeout: 60_000 });
+        await msgs.first().waitFor({ state: "visible", timeout: 0 });
 
         // Get the last message text and wait until it stops changing
         const last = msgs.last();
@@ -41,13 +41,18 @@ export class ChatbotClient {
         const thinking = this.page.locator(selectors.thinkingIndicator);
         if (await thinking.count()) {
             // don't hard-fail if it never appears/disappears; best-effort
-            await thinking.first().waitFor({ state: "hidden", timeout: 60_000 }).catch(() => { });
+            await thinking.first().waitFor({ state: "hidden", timeout: 0 }).catch(() => { });
         }
 
         let prev = "";
         let stableTicks = 0;
 
-        for (let i = 0; i < 60; i++) {
+        const maxMinutes = 30;
+        const start = Date.now();
+
+        while (true) {
+            if ((Date.now() - start) > maxMinutes * 60_000) break;
+
             const text = (await last.innerText().catch(() => "")).trim();
 
             if (text && text === prev) {

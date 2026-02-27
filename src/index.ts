@@ -34,11 +34,15 @@ async function main() {
     const browser = await chromium.launch({
         slowMo,
         headless: process.env.HEADLESS !== "false"
+        timeout: 0
     });
 
     const context = await browser.newContext({
         storageState: process.env.STORAGE_STATE || undefined
     });
+
+    context.setDefaultTimeout(0);
+    context.setDefaultNavigationTimeout(0);
 
     const page = await context.newPage();
     const chat = new SelectorChatAdapter(page, cfg);
